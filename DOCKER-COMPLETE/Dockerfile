@@ -1,4 +1,4 @@
-FROM node
+FROM node:latest
 
 WORKDIR /app
 # workdir를 /app으로 설정했기 때문에 COPY 에서 상대적 경로를 아래와 같이 설정 가능능
