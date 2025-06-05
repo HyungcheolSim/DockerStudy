@@ -58,6 +58,7 @@ app.get('/movies', async (req, res) => {
   }
 });
 
+
 app.get('/people', async (req, res) => {
   try {
     const response = await axios.get('https://swapi.dev/api/people');
