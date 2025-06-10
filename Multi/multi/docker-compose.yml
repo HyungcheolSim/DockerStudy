@@ -1,0 +1,52 @@
+#야말~ 파일
+# Docker COmpose's Version
+
+# 에러메세지에서 충돌날 위험 있다고 주석치라함 version: "3.8"
+# Services [컨테이너들]
+services:
+  mongodb:
+# 이미지 명으로 조회되며 이미지가 저장되는 URL이나 자체 저장소일 수도 있다.
+    image: 'mongo'
+    # -v data:/data/db
+    volumes:
+      - data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: max
+      MONGO_INITDB_ROOT_PASSWORD: secret
+      # 환경 변수 파일을 지정할 수도 있음. --env-file 
+    # env-file: 
+    #  - ./env/mongo.env
+    # key-value 쌍이 아닌 값은 - 로 표시
+    #도커가 컴포즈 파일에 특정된 모든 서비스를 실행할 환경을 만들고 그 네트워크에 넣기 때문에 network는 필요 없다.
+  backend:
+    build: ./backend
+    # build:
+    #   context: ./backend
+    #   dockerfile: Dockerfile
+      # args:  
+    ports: 
+    - '80:80'
+    volumes:
+      - logs:/app/logs
+      - ./backend:/app
+      #익명 볼륨은 최상위 키 볼륨에 추가할 수 없다
+      - /app/node_modules
+    env_file:
+      - ./env/backend.env
+    depends_on:
+    - mongodb
+  frontend:
+    build: ./frontend
+    ports:
+    - '3000:3000'
+    volumes:
+      - ./frontend/src:/app/src
+    stdin_open: true
+    tty: true
+    depends_on:
+    - backend
+
+##명명볼륨을 선언할 곳
+volumes:
+  data:
+  logs:
